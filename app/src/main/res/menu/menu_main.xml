@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_toggle_keyboard"
+        android:orderInCategory="1"
+        android:title="Toggle Keyboard"
+        android:icon="@drawable/ic_action_keyboard"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_connect"
+        android:orderInCategory="2"
+        android:title="Connect to MouseServer"
+        android:icon="@drawable/ic_action_connect"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_disconnect"
+        android:orderInCategory="3"
+        android:title="Disconnect from MouseServer"
+        android:icon="@drawable/ic_action_disconnect"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="4"
+        android:title="Settings"
+        android:icon="@drawable/ic_action_settings"
+        app:showAsAction="never" />
+</menu>

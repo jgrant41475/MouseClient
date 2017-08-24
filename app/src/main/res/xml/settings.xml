@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="MouseServer Settings">
+
+        <EditTextPreference
+            android:key="mouse_server_ip"
+            android:title="Server IP Address"
+            android:summary="The IP address of the computer running MouseServer"/>
+        <EditTextPreference
+            android:key="mouse_server_port"
+            android:title="Server Port"
+            android:summary="The port that MouseServer is listening on (Default value: 5050)"
+            android:defaultValue="5050" />
+        <CheckBoxPreference
+            android:key="connect_on_open"
+            android:title="Automatically connect"
+            android:summary="Attempts to connect to the MouseServer when the application is opened"
+            android:defaultValue="false"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

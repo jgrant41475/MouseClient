@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MouseClient</string>
+    <string name="todo_text">Drag finger anywhere on screen to move mouse\nTap one finger to click, double tap to right click\nLong press to drag</string>
+    <string name="image_desc_vol_down">Volume Down</string>
+    <string name="image_desc_vol_mute">Toggle Mute</string>
+    <string name="image_desc_vol_up">Volume Up</string>
+    <string name="image_desc_power">Power off</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
