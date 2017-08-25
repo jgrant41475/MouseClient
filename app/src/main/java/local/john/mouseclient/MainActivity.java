@@ -13,7 +13,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -28,27 +27,21 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener, View.OnLongClickListener {
 
     // Debugging
     protected static final String DEFAULT_SERVER_IP = "192.168.0.5";
     protected static final String DEFAULT_SERVER_PORT = "5050";
-    private static final String DEBUG_TAG = "DEBUGGING_TAG";
 
 
     // Variables instantiated in onCreate
     private String mServerIP;
     private String mServerPort;
-    private boolean mConnectOnStart;
     private SharedPreferences sharedPref;
 
     //UI views
     protected TextView mConnectionStatus;
     protected GestureDetector mDetector;
-    private ImageButton volumeDown;
-    private ImageButton volumeMute;
-    private ImageButton volumeUp;
-    private ImageButton powerButton;
 
 
     @Override
@@ -56,22 +49,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mConnectionStatus = findViewById(R.id.connection_status);
-        RelativeLayout rootView = findViewById(R.id.rootView);
+        mConnectionStatus = (TextView) findViewById(R.id.connection_status);
+        RelativeLayout rootView = (RelativeLayout) findViewById(R.id.rootView);
         rootView.setOnTouchListener(this);
 
         getPreferences();
 
 
         // Collect all control buttons and assign a ClickListener event
-        volumeDown = findViewById(R.id.button_volume_down);
-        volumeMute = findViewById(R.id.button_volume_mute);
-        volumeUp = findViewById(R.id.button_volume_up);
-        powerButton = findViewById(R.id.button_power);
+        ImageButton volumeDown = (ImageButton) findViewById(R.id.button_volume_down);
+        ImageButton volumeMute = (ImageButton) findViewById(R.id.button_volume_mute);
+        ImageButton volumeUp = (ImageButton) findViewById(R.id.button_volume_up);
+        ImageButton exitButton = (ImageButton) findViewById(R.id.button_exit);
+        ImageButton powerButton = (ImageButton) findViewById(R.id.button_power);
 
         volumeDown.setOnClickListener(this);
         volumeMute.setOnClickListener(this);
         volumeUp.setOnClickListener(this);
+        exitButton.setOnLongClickListener(this);
         powerButton.setOnClickListener(this);
 
         mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
@@ -229,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             mServerIP = sharedPref.getString("mouse_server_ip", DEFAULT_SERVER_IP);
             mServerPort = sharedPref.getString("mouse_server_port", DEFAULT_SERVER_PORT);
-            mConnectOnStart = sharedPref.getBoolean("connect_on_open", false);
         }
     }
 
@@ -246,13 +240,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case R.id.button_volume_up:
                     new sendAsync().execute("VUP");
                     break;
-                case R.id.button_power:
-                    new sendAsync().execute("SLEEP");
-                    break;
                 default:
                     // Do nothing...
             }
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if(isBound) {
+            switch (view.getId()) {
+                case R.id.button_exit:
+                    new sendAsync().execute("EXIT");
+                    break;
+                case R.id.button_power:
+                    new sendAsync().execute("SLEEP");
+                    break;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -327,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mService = null;
             isBound = false;
 
-            mConnectionStatus.setText("Disconnected");
+            mConnectionStatus.setText(R.string.disconnected);
             mConnectionStatus.setTextColor(Color.parseColor("#FF0000"));
         }
     }
@@ -363,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (msg.what) {
                 // Connection to server established
                 case MESSAGE_CONNECTED:
-                    activity.mConnectionStatus.setText("Connected");
+                    activity.mConnectionStatus.setText(R.string.connected);
                     activity.mConnectionStatus.setTextColor(Color.parseColor("#00FF00"));
                     break;
                 // Connection ended unexpectedly
@@ -384,10 +391,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-    }
-
-    private static void log(String msg) {
-        Log.v(DEBUG_TAG, msg);
     }
 
 }

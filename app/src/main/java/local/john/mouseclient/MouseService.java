@@ -90,7 +90,7 @@ public class MouseService extends Service {
         }
 
         if (!mGraceful)
-            mErr = uiHandler.MESSAGE_CONN_LOST;
+            mErr = MainActivity.mHandler.MESSAGE_CONN_LOST;
         stopSelf();
     }
 
@@ -109,7 +109,7 @@ public class MouseService extends Service {
             e.printStackTrace();
         }
 
-        uiHandler.sendEmptyMessage((mGraceful) ? uiHandler.MESSAGE_GRACEFUL : mErr);
+        uiHandler.sendEmptyMessage((mGraceful) ? MainActivity.mHandler.MESSAGE_GRACEFUL : mErr);
     }
 
     public void close(boolean userReq) {

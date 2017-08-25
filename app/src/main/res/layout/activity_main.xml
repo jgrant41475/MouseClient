@@ -12,33 +12,10 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:id="@+id/connection_status_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connection status: "
-            android:textColor="#FFF" />
-
-        <TextView
-            android:id="@+id/connection_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Disconnected"
-            android:textColor="#F00" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/volume_buttons_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        >
+        android:layout_alignParentStart="true">
         <ImageButton
             android:id="@+id/button_volume_down"
             android:layout_width="wrap_content"
@@ -58,13 +35,40 @@
             android:contentDescription="@string/image_desc_vol_up"
             android:src="@drawable/ic_action_volume_up"/>
         <ImageButton
+            android:id="@+id/button_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/image_desc_vol_down"
+            android:src="@drawable/ic_action_close"/>
+        <ImageButton
             android:id="@+id/button_power"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginStart="30dp"
-            android:contentDescription="@string/image_desc_power"
+            android:contentDescription="@string/close_window"
             android:src="@drawable/ic_action_power"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/connection_status_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/volume_buttons_container"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connection_status"
+            android:textColor="#FFF" />
+
+        <TextView
+            android:id="@+id/connection_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/disconnected"
+            android:textColor="#F00" />
     </LinearLayout>
 
     <TextView
