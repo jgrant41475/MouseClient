@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected TextView mConnectionStatus;
     protected GestureDetector mDetector;
 
+    private static long lastSend = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         getPreferences();
 
-
         // Collect all control buttons and assign a ClickListener event
         ImageButton volumeDown = (ImageButton) findViewById(R.id.button_volume_down);
         ImageButton volumeMute = (ImageButton) findViewById(R.id.button_volume_mute);
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         volumeMute.setOnClickListener(this);
         volumeUp.setOnClickListener(this);
         exitButton.setOnLongClickListener(this);
-        powerButton.setOnClickListener(this);
+        powerButton.setOnLongClickListener(this);
 
         mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             private boolean isDown = false;
@@ -129,6 +129,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(!isBound || event.getAction() != KeyEvent.ACTION_DOWN)
+            return super.dispatchKeyEvent(event);
+
+        int number = (event.getAction() == KeyEvent.FLAG_LONG_PRESS) ? 5 : 1;
+
+        long now = System.currentTimeMillis();
+        boolean ok;
+
+        if(lastSend == 0 || now - lastSend > 75) {
+            lastSend = now;
+            ok = true;
+        }
+        else { ok = false; }
+
+
+        if(event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            if(ok) new sendAsync().execute("VDOWN " + number);
+            return true;
+        }
+        else if(event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
+            if(ok) new sendAsync().execute("VUP " + number);
+            return true;
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if(!isBound)
             return false;
@@ -136,9 +165,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int kc = event.getUnicodeChar();
         boolean send;
 
-        if(keyCode == 67)
+        if(keyCode == 67) {
             kc = 8;
-        if ((kc > 96 && kc < 123) || (kc > 64 && kc < 91) || (kc > 47 && kc < 58))
+            send = true;
+        }
+
+        else if ((kc > 96 && kc < 123) || (kc > 64 && kc < 91) || (kc > 47 && kc < 58))
             send = true;
         else
             switch (kc) {
@@ -147,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case 44:
                 case 32:
                 case 46:
+                case 47:
                 case 64:
                 case 35:
                 case 36:
@@ -184,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (send)
             mService.write("SEND " + kc);
+
         return true;
     }
 
@@ -344,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected String doInBackground(String... strings) {
+
             mService.write(strings[0]);
             return null;
         }
